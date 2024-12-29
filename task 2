@@ -1,0 +1,50 @@
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from gensim.models import Word2Vec
+
+# Download necessary NLTK data files
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
+# Sample text data
+text = "Natural Language Processing (NLP) is a fascinating field of AI that focuses on understanding and processing human language."
+
+# Tokenization
+tokens = word_tokenize(text)
+print("\nTokens:", tokens)
+
+# Stop-word removal
+stop_words = set(stopwords.words('english'))
+filtered_tokens = [word for word in tokens if word.lower() not in stop_words]
+print("\nTokens after Stop-word Removal:", filtered_tokens)
+
+# Stemming
+stemmer = PorterStemmer()
+stemmed_tokens = [stemmer.stem(word) for word in filtered_tokens]
+print("\nStemmed Tokens:", stemmed_tokens)
+
+# Lemmatization
+lemmatizer = WordNetLemmatizer()
+lemmatized_tokens = [lemmatizer.lemmatize(word) for word in filtered_tokens]
+print("\nLemmatized Tokens:", lemmatized_tokens)
+
+# Preparing data for Word2Vec
+# Word2Vec requires tokenized sentences, so we create a list of tokenized sentences
+sentences = [word_tokenize(sent) for sent in nltk.sent_tokenize(text)]
+
+# Training a Word2Vec model
+model = Word2Vec(sentences, vector_size=100, window=5, min_count=1, workers=4)
+
+# Accessing word embeddings
+word_embedding = model.wv['language']  # Example: Get the vector for the word 'language'
+print("\nWord Embedding for 'language':", word_embedding)
+
+# Display similar words
+similar_words = model.wv.most_similar('language')
+print("\nWords similar to 'language':", similar_words)
+
+print("\nNLP application complete! You can expand this to analyze larger and more complex datasets.")
